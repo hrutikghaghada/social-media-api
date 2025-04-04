@@ -1,0 +1,34 @@
+services:
+  api:
+    image: hrutik2318/social-media-api
+    ports:
+      - 80:8000
+    environment:
+      - PROD_DATABASE_USERNAME=${PROD_DATABASE_USERNAME}
+      - PROD_DATABASE_PASSWORD=${PROD_DATABASE_PASSWORD}
+      - PROD_DATABASE_HOSTNAME=${PROD_DATABASE_HOSTNAME}
+      - PROD_DATABASE_PORT=${PROD_DATABASE_PORT}
+      - PROD_DATABASE_NAME=${PROD_DATABASE_NAME}
+      - PROD_SECRET_KEY=${PROD_SECRET_KEY}
+      - PROD_ALGORITHM=${PROD_ALGORITHM}
+      - PROD_ACCESS_TOKEN_EXPIRE_MINUTES=${PROD_ACCESS_TOKEN_EXPIRE_MINUTES}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=${PROD_DATABASE_PASSWORD}
+      - POSTGRES_DB=${PROD_DATABASE_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:

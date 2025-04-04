@@ -1,0 +1,11 @@
+.DS_Store
+*.pyc
+__pycache__
+*.db
+.venv
+.vscode/
+*.png
+.mypy_cache
+.pytest_cache
+.ruff_cache
+*.log
