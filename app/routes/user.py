@@ -23,13 +23,22 @@ logger = logging.getLogger(__name__)
 async def register_user(user: UserIn):
     logger.info("Registering a user", extra={"email": user.email})
 
-    if await get_user(user.email):
+    try:
+        valid = validate_email(user.email)
+        email = valid.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Invalid email format",
+        )
+
+    if await get_user(email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
         )
 
     query = user_table.insert().values(
-        email=user.email, password=get_password_hash(user.password)
+        email=email, password=get_password_hash(user.password)
     )
     await database.execute(query)
     return {"detail": "User created"}
@@ -37,9 +46,8 @@ async def register_user(user: UserIn):
 
 @router.post("/token", response_model=Token)
 async def login(user_credentials: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    email = user_credentials.username
     try:
-        valid = validate_email(email)
+        valid = validate_email(user_credentials.username)
         email = valid.email
     except EmailNotValidError:
         raise HTTPException(
