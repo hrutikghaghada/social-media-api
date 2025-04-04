@@ -61,8 +61,9 @@ like_table = sqlalchemy.Table(
     ),
 )
 
+DATABASE_URL = f"postgresql+asyncpg://{config.DATABASE_USERNAME}:{config.DATABASE_PASSWORD}@{config.DATABASE_HOSTNAME}:{config.DATABASE_PORT}/{config.DATABASE_NAME}"
 
-engine = create_async_engine(config.DATABASE_URL)
+engine = create_async_engine(DATABASE_URL)
 
 
 async def create_tables():
@@ -70,6 +71,4 @@ async def create_tables():
         await conn.run_sync(metadata.create_all)
 
 
-database = databases.Database(
-    config.DATABASE_URL, force_rollback=config.DB_FORCE_ROLL_BACK
-)
+database = databases.Database(DATABASE_URL, force_rollback=config.DB_FORCE_ROLL_BACK)
