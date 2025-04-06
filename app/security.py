@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 SECRET_KEY = config.SECRET_KEY
 ALGORITHM = config.ALGORITHM
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
-pwd_context = CryptContext(schemes=["bcrypt"])
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,

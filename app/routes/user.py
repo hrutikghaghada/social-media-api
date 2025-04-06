@@ -25,7 +25,7 @@ async def register_user(user: UserIn):
 
     try:
         valid = validate_email(user.email)
-        email = valid.email
+        email = valid.normalized
     except EmailNotValidError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -48,7 +48,7 @@ async def register_user(user: UserIn):
 async def login(user_credentials: Annotated[OAuth2PasswordRequestForm, Depends()]):
     try:
         valid = validate_email(user_credentials.username)
-        email = valid.email
+        email = valid.normalized
     except EmailNotValidError:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
