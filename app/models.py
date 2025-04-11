@@ -13,7 +13,7 @@ class PostOut(PostIn):
     id: int
     created_at: datetime
     user_id: int
-    likes: int
+    likes: int = Field(default=0)
 
     model_config = ConfigDict(from_attributes=True)
 
