@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 from typing import Annotated
 
 import sqlalchemy
@@ -34,20 +35,44 @@ async def find_post(post_id: int):
     return post
 
 
+class PostSorting(str, Enum):
+    new = "new"
+    old = "old"
+    most_likes = "most_likes"
+
+
 @router.get("/", response_model=list[PostOut])
 async def get_posts(
     current_user: Annotated[UserOut, Depends(get_current_user)],
     limit: Annotated[int, Query(gt=0)] = 10,
     skip: Annotated[int, Query(ge=0)] = 0,
     search: str = "",
+    sorting: PostSorting = PostSorting.new,
 ):
     logger.info("Getting all posts")
 
-    query = (
-        select_post_and_likes.filter(post_table.c.title.contains(search))
-        .offset(skip)
-        .limit(limit)
-    )
+    if sorting == PostSorting.new:
+        query = (
+            select_post_and_likes.filter(post_table.c.title.contains(search))
+            .offset(skip)
+            .limit(limit)
+            .order_by(post_table.c.created_at.desc())
+        )
+    elif sorting == PostSorting.old:
+        query = (
+            select_post_and_likes.filter(post_table.c.title.contains(search))
+            .offset(skip)
+            .limit(limit)
+            .order_by(post_table.c.created_at.asc())
+        )
+    elif sorting == PostSorting.most_likes:
+        query = (
+            select_post_and_likes.filter(post_table.c.title.contains(search))
+            .offset(skip)
+            .limit(limit)
+            .order_by(sqlalchemy.desc("likes"))
+        )
+
     return await database.fetch_all(query)
 
 
