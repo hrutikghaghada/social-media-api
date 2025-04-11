@@ -31,11 +31,7 @@ class ProdConfig(GlobalConfig):
 
 
 class TestConfig(GlobalConfig):
-    DATABASE_URL: str = "sqlite:///test.db"
     DB_FORCE_ROLL_BACK: bool = True
-    SECRET_KEY: str = "e1e3c1b0d4f2b9b4c5e5e3b0f5e0c5n4o7f4k2v7k1b9s4jc5v1p5s3t8i5r2c"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
 
     model_config = SettingsConfigDict(env_prefix="TEST_")
 
