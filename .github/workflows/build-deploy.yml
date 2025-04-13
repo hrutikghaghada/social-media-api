@@ -1,0 +1,77 @@
+name: Build and Deploy code
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    environment:
+      name: test
+    env:
+      TEST_DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      TEST_DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      TEST_DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      TEST_DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      TEST_DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      TEST_SECRET_KEY: ${{secrets.SECRET_KEY}}
+      TEST_ALGORITHM: ${{secrets.ALGORITHM}}
+      TEST_ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+    
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install python version 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install -r requirements.txt
+      - name: Lint with ruff
+        run: ruff check --output-format=github .
+      - name: Test with pytest
+        run: pytest
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/social-media-api:latest
+          cache-from: type=registry,ref=user/app:buildcache
+          cache-to: type=registry,ref=user/app:buildcache,mode=max
+          
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
