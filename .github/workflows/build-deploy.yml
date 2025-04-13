@@ -48,6 +48,8 @@ jobs:
           pip install -r requirements.txt
       - name: Lint with ruff
         run: ruff check --output-format=github .
+      - name: Run Alembic migrations
+        run: alembic upgrade head
       - name: Test with pytest
         run: pytest
 
@@ -72,6 +74,6 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/social-media-api:latest
           cache-from: type=registry,ref=user/app:buildcache
           cache-to: type=registry,ref=user/app:buildcache,mode=max
-          
+
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
