@@ -42,6 +42,11 @@ app.include_router(user_router)
 app.include_router(like_router)
 
 
+@app.get("/health", status_code=200, tags=["Health"])
+async def health_check():
+    return {"status": "ok", "service": "social_media_api"}
+
+
 @app.exception_handler(HTTPException)
 async def http_exception_handle_logging(request, exc):
     logger.error(f"HTTPException: {exc.status_code} {exc.detail}")
