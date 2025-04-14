@@ -93,10 +93,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd app/src
+            echo "Pulling the latest code from the repository"
             git pull
             echo "Stopping and removing any running containers"
             docker compose -f docker-compose-prod.yml down
             echo "Removing the old Docker image"
-            docker rmi -f ${{ secrets.DOCKER_HUB_USERNAME }}/social-media-api || true
+            docker rmi -f hrutik2318/social-media-api || true
             echo "Pulling the latest image"
             docker compose -f docker-compose-prod.yml up --build -d
