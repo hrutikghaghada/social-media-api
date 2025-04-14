@@ -19,6 +19,10 @@ services:
 
   db:
     image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=${PROD_DATABASE_PASSWORD}
       - POSTGRES_DB=${PROD_DATABASE_NAME}
@@ -27,8 +31,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
 
 volumes:
   postgres-db:
