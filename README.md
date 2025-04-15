@@ -19,6 +19,24 @@ The API is deployed and accessible on this [link](https://hrutikghaghada.tech/do
 
 ---
 
+## Tech Stack
+
+The project is built using the following technologies:
+
+- **FastAPI**: For building the RESTful API.
+- **PostgreSQL**: As the relational database.
+- **Databases**: For asynchronous database interactions.
+- **Alembic**: For database migrations.
+- **JWT**: For secure token-based authentication.
+- **Docker**: For containerization of the application.
+- **GitHub Actions**: For CI/CD workflows.
+- **pytest**: For testing the application.
+- **httpx**: For making asynchronous HTTP requests in tests.
+- **Pydantic**: For data validation and settings management.
+- **ruff**: For linting and enforcing code quality.
+
+---
+
 ## Project Structure
 
 ```
