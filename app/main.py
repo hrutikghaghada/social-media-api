@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title="Social Media API")
 
 app.add_middleware(CorrelationIdMiddleware)
 
