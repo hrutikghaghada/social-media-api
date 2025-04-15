@@ -2,7 +2,7 @@
 
 A scalable and secure RESTful API for a social media platform built with **FastAPI**. This project supports user registration, authentication, post creation, liking posts, and more. It is designed with modern best practices, including asynchronous database operations, token-based authentication, and robust testing.
 
-The API is deployed and accessible on this [link](http://139.59.23.143/docs).
+The API is deployed and accessible on this [link](https://hrutikghaghada.tech/docs).
 
 ## Features
 
@@ -115,7 +115,7 @@ social_media_api/
    docker-compose -f docker-compose-prod.yml up --build
    ```
 
-2. Access the API at [http://localhost](http://localhost).
+2. Access the API at [http://localhost:8000](http://localhost:8000).
 
 ---
 
