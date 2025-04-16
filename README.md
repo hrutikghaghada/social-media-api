@@ -173,3 +173,5 @@ The application uses environment variables for configuration. Refer to `.env.exa
 - [Alembic](https://alembic.sqlalchemy.org/)
 - [Docker](https://www.docker.com/)
 - [GitHub Actions](https://github.com/features/actions)
+- [freecodecamp Python API course](https://youtu.be/0sOvCWFmrtA?feature=shared)
+- [Udemy FastAPI course](https://www.udemy.com/share/109z6k/)
