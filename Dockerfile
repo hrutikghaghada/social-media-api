@@ -1,11 +1,16 @@
 FROM python:3.11
 
-WORKDIR /usr/src/app
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
+# Copy the application into the container.
+COPY . /app
 
-CMD ["uvicorn", "--workers", "4", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Install the application dependencies.
+WORKDIR /app
+RUN uv sync --frozen --no-cache --no-dev
+
+# Run the application.
+CMD ["/app/.venv/bin/uvicorn", "app.main:app", "--workers", "4", "--host", "0.0.0.0", "--port", "8000"]
 
 
